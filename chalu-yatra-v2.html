@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chalu Yatra — E-Rickshaw</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --marigold:#F0A32F;
+  --marigold-dark:#C97F16;
+  --terai:#1F6B4C;
+  --terai-dark:#144A34;
+  --sindoor:#B84A3E;
+  --cream:#F6EFD9;
+  --ink:#1C2A20;
+  --ink-soft:#4B5A50;
+  --white:#FFFDF7;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:
+    repeating-linear-gradient(45deg, rgba(31,107,76,0.035) 0px, rgba(31,107,76,0.035) 2px, transparent 2px, transparent 14px),
+    var(--cream);
+  color:var(--ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.app{
+  width:100%;
+  max-width:460px;
+  min-height:100vh;
+  background:var(--white);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 0 40px rgba(0,0,0,0.08);
+  position:relative;
+}
+header{
+  background:var(--terai);
+  background-image:linear-gradient(135deg, var(--terai) 0%, var(--terai-dark) 100%);
+  color:var(--white);
+  padding:22px 20px 26px;
+  border-bottom:5px solid var(--marigold);
+  position:relative;
+}
+header .logo{
+  font-family:'Poppins',sans-serif;
+  font-weight:800;
+  font-size:26px;
+  letter-spacing:0.5px;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  cursor:pointer;
+  user-select:none;
+  width:fit-content;
+}
+header .logo .dot{color:var(--marigold);}
+header .tag{
+  font-size:12.5px;
+  opacity:0.85;
+  margin-top:4px;
+  font-weight:500;
+}
+header .session-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  font-size:12px;
+}
+header .session-bar .who{opacity:0.9;}
+header .logout{
+  background:rgba(255,255,255,0.15);
+  border:none;
+  color:var(--white);
+  padding:5px 10px;
+  border-radius:8px;
+  font-size:11px;
+  cursor:pointer;
+  font-weight:600;
+}
+.admin-gear{
+  position:absolute;
+  top:20px;right:18px;
+  font-size:18px;
+  cursor:pointer;
+  opacity:0.85;
+}
+.tabs{
+  display:flex;
+  background:var(--white);
+  border-bottom:1px solid #EEE6CE;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.tab-btn{
+  flex:1;
+  padding:13px 0;
+  text-align:center;
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:13px;
+  color:var(--ink-soft);
+  background:none;
+  border:none;
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:all .15s;
+}
+.tab-btn.active{
+  color:var(--terai-dark);
+  border-bottom:3px solid var(--marigold);
+}
+main{
+  flex:1;
+  padding:18px 18px 90px;
+  overflow-y:auto;
+}
+.section-label{
+  font-family:'Poppins',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--terai-dark);
+  margin:18px 0 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-label:first-child{margin-top:0;}
+.mode-toggle{
+  display:flex;
+  background:var(--cream);
+  border-radius:12px;
+  padding:4px;
+  gap:4px;
+  margin-bottom:16px;
+}
+.mode-toggle button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:9px;
+  background:none;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:13px;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+.mode-toggle button.active{
+  background:var(--white);
+  color:var(--terai-dark);
+  box-shadow:0 1px 4px rgba(0,0,0,0.12);
+}
+.route-card{
+  border:1px solid #EEE6CE;
+  border-radius:14px;
+  padding:14px 14px 16px;
+  margin-bottom:12px;
+  background:var(--white);
+}
+.route-card .rname{
+  font-family:'Poppins',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.route-card .rfare{color:var(--sindoor);font-size:14px;font-weight:700;}
+.ribbon{display:flex;align-items:center;margin:12px 0 10px;position:relative;}
+.ribbon::before{
+  content:'';position:absolute;left:8px;right:8px;top:50%;height:2px;
+  background:repeating-linear-gradient(90deg, var(--marigold) 0 6px, transparent 6px 11px);
+  transform:translateY(-50%);z-index:0;
+}
+.bead{width:16px;height:16px;border-radius:50%;background:var(--marigold);border:2px solid var(--white);
+  box-shadow:0 0 0 1.5px var(--marigold-dark);z-index:1;flex:1;margin:0 auto;}
+.bead.first,.bead.last{background:var(--terai);box-shadow:0 0 0 1.5px var(--terai-dark);}
+.stop-labels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);font-weight:500;margin-top:2px;}
+.route-meta{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;
+  font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;}
+.btn-primary{background:var(--terai);color:var(--white);}
+.btn-primary:hover{background:var(--terai-dark);}
+.btn-marigold{background:var(--marigold);color:var(--ink);}
+.btn-outline{background:none;border:1.5px solid var(--terai);color:var(--terai-dark);}
+.btn-danger{background:var(--sindoor);color:var(--white);}
+.card{border:1px solid #EEE6CE;border-radius:14px;padding:14px;margin-bottom:12px;background:var(--white);}
+input[type=text],input[type=tel],input[type=password],input[type=number]{
+  width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid #E5DCC0;
+  font-family:'Inter',sans-serif;font-size:14px;margin-bottom:10px;
+}
+label{font-size:12px;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:4px;}
+.status-pill{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Poppins',sans-serif;}
+.pill-wait{background:#FBE7C6;color:#8A5A00;}
+.pill-go{background:#DCEEE4;color:var(--terai-dark);}
+.pill-done{background:#E6E1D3;color:var(--ink-soft);}
+.pill-block{background:#F6DCD8;color:var(--sindoor);}
+.pay-choice{display:flex;gap:10px;margin-top:8px;}
+.pay-choice button{flex:1;padding:14px 8px;border-radius:12px;border:1.5px solid #E5DCC0;
+  background:var(--white);font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;cursor:pointer;text-align:left;}
+.pay-choice button small{display:block;font-weight:500;font-size:11px;color:var(--ink-soft);margin-top:3px;}
+.pay-choice button.sel{border-color:var(--marigold);background:#FFF8EA;}
+.req-row{display:flex;justify-content:space-between;align-items:center;border:1px solid #EEE6CE;
+  border-radius:12px;padding:12px;margin-bottom:10px;}
+.req-row .info b{font-size:13.5px;}
+.req-row .info div{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat{background:var(--terai);background-image:linear-gradient(135deg, var(--terai), var(--terai-dark));
+  color:var(--white);border-radius:14px;padding:14px;}
+.stat.marigold{background-image:linear-gradient(135deg, var(--marigold), var(--marigold-dark));color:var(--ink);}
+.stat .n{font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;}
+.stat .l{font-size:11px;opacity:0.85;margin-top:2px;font-weight:600;}
+.ledger-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F0EAD5;font-size:13px;}
+.ledger-row:last-child{border-bottom:none;}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13.5px;}
+.note{background:#FFF8EA;border:1px solid #F0D9A0;border-radius:10px;padding:10px 12px;font-size:12px;color:#7A5200;margin-bottom:14px;}
+.contact-box{background:#EAF4EE;border:1px solid #CDE6D8;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13px;}
+.contact-box b{color:var(--terai-dark);}
+.ad-banner{
+  background:linear-gradient(135deg,#FFF3D9,#FCE7BB);
+  border:1px dashed var(--marigold-dark);
+  border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:12.5px;color:#6E4A0E;position:relative;
+}
+.ad-banner .tag2{font-size:9px;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;opacity:0.7;}
+.blocked-screen{text-align:center;padding:40px 24px;}
+.blocked-screen .icon{font-size:44px;margin-bottom:10px;}
+.login-wrap{padding:30px 24px;}
+.role-toggle{display:flex;gap:8px;margin-bottom:18px;}
+.role-toggle button{flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5DCC0;background:var(--white);
+  font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;cursor:pointer;}
+.role-toggle button.active{background:var(--terai);color:var(--white);border-color:var(--terai);}
+.small-link{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:22px;cursor:pointer;opacity:0.6;}
+.err{color:var(--sindoor);font-size:12px;margin:-4px 0 10px;}
+.premium-badge{display:inline-block;background:var(--marigold);color:var(--ink);font-size:10px;font-weight:800;
+  padding:2px 8px;border-radius:8px;margin-left:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header id="header"></header>
+  <div class="tabs" id="tabs" style="display:none;"></div>
+  <main id="main"></main>
+</div>
+
+<script>
+// ================= CONFIG =================
+const ADMIN_PASSCODE = "778899"; // ⚠️ change this before real use
+const COMMISSION_RATE = 0.02; // 2%
+const DRIVER_MONTHLY_FEE = 500;
+const TRIAL_DAYS = 30;
+const DAY_MS = 24*60*60*1000;
+
+// ================= DB (in-memory) =================
+const DB = {
+  users: {
+    // demo seed so contact-sharing has someone to show
+    "9800000001": {pin:"1111", role:"driver", trialStart:Date.now(), paid:false, premium:false, blocked:false},
+  },
+  ads: [
+    {id:1, text:"🎉 New drivers: your first month is FREE. Start earning today!", link:""}
+  ],
+  routes:[
+    {id:1,name:'Chowk – Bus Park', stops:['Chowk','Ward 4','Bus Park'], fare:30, eta:'6 min'},
+    {id:2,name:'College Road – Bazaar', stops:['College','Mill Gate','Bazaar'], fare:25, eta:'4 min'},
+    {id:3,name:'Hospital – Station', stops:['Hospital','Chowk','Station'], fare:35, eta:'9 min'},
+  ],
+  requests:[
+    {id:101, from:'Chowk', to:'Bus Park', fare:30, type:'fixed', riderPhone:'9811111111'},
+  ],
+  trips:[],
+};
+
+// ================= SESSION =================
+let session = { phone:null, role:null, isAdmin:false };
+let ui = { loginRole:'rider', loginErr:'', logoTaps:0, adminPromptOpen:false,
+           tab:'rider', mode:'fixed', booking:null };
+
+function driverStatus(u){
+  if(!u) return 'trial';
+  if(u.paid) return 'active';
+  const daysUsed = (Date.now() - u.trialStart) / DAY_MS;
+  if(daysUsed <= TRIAL_DAYS) return 'trial';
+  return 'blocked';
+}
+function daysLeftInTrial(u){
+  const daysUsed = (Date.now() - u.trialStart) / DAY_MS;
+  return Math.max(0, Math.ceil(TRIAL_DAYS - daysUsed));
+}
+
+// ================= RENDER ROOT =================
+function render(){
+  const header = document.getElementById('header');
+  const tabs = document.getElementById('tabs');
+  const main = document.getElementById('main');
+
+  if(!session.phone && !session.isAdmin){
+    header.innerHTML = `
+      <div class="logo" id="logo-tap">Chalu<span class="dot">.</span></div>
+      <div class="tag">e-rickshaw rides & shuttle routes, pay your way</div>`;
+    tabs.style.display='none';
+    main.innerHTML = loginView();
+    attachLoginHandlers();
+    document.getElementById('logo-tap').onclick = ()=>{
+      ui.logoTaps++;
+      if(ui.logoTaps>=5){ ui.logoTaps=0; ui.adminPromptOpen=true; render(); }
+    };
+    return;
+  }
+
+  if(session.isAdmin){
+    header.innerHTML = `
+      <div class="logo">Chalu<span class="dot">.</span> <span style="font-size:12px;opacity:0.7;">ADMIN</span></div>
+      <div class="session-bar">
+        <span class="who">🔐 Admin session</span>
+        <button class="logout" id="logout-btn">Log out</button>
+      </div>`;
+    tabs.style.display='none';
+    main.innerHTML = adminView();
+    attachAdminHandlers();
+    document.getElementById('logout-btn').onclick = ()=>{ session={phone:null,role:null,isAdmin:false}; render(); };
+    return;
+  }
+
+  // logged-in rider or driver
+  header.innerHTML = `
+    <div class="logo">Chalu<span class="dot">.</span></div>
+    <div class="session-bar">
+      <span class="who">📱 ${session.phone} · ${session.role==='rider'?'Rider':'Driver'}</span>
+      <button class="logout" id="logout-btn">Log out</button>
+    </div>`;
+  tabs.style.display='flex';
+  tabs.innerHTML = `
+    <button class="tab-btn ${ui.tab==='rider'?'active':''}" data-tab="rider" style="${session.role!=='rider'?'display:none':''}">🧍 Rider</button>
+    <button class="tab-btn ${ui.tab==='driver'?'active':''}" data-tab="driver" style="${session.role!=='driver'?'display:none':''}">🛺 Driver</button>`;
+  ui.tab = session.role; // lock to their own role
+
+  main.innerHTML = session.role==='rider' ? riderView() : driverView();
+  attachAppHandlers();
+  document.getElementById('logout-btn').onclick = ()=>{ session={phone:null,role:null,isAdmin:false}; ui.booking=null; render(); };
+}
+
+// ================= LOGIN VIEW =================
+function loginView(){
+  if(ui.adminPromptOpen){
+    return `
+    <div class="login-wrap">
+      <div class="section-label">🔐 Admin Access</div>
+      <label>Passcode</label>
+      <input type="password" id="admin-pass" placeholder="Enter admin passcode">
+      ${ui.loginErr ? `<div class="err">${ui.loginErr}</div>` : ''}
+      <button class="btn btn-primary" id="admin-submit">Enter Admin Panel</button>
+      <div class="small-link" id="admin-cancel">← back to login</div>
+    </div>`;
+  }
+
+  return `
+  <div class="login-wrap">
+    <div class="role-toggle">
+      <button data-role="rider" class="${ui.loginRole==='rider'?'active':''}">🧍 I'm a Rider</button>
+      <button data-role="driver" class="${ui.loginRole==='driver'?'active':''}">🛺 I'm a Driver</button>
+    </div>
+    <div class="section-label" style="margin-top:0;">Log in or Sign up</div>
+    <label>Phone number</label>
+    <input type="tel" id="login-phone" placeholder="98XXXXXXXX" maxlength="10">
+    <label>PIN (4 digits)</label>
+    <input type="password" id="login-pin" placeholder="••••" maxlength="4">
+    ${ui.loginErr ? `<div class="err">${ui.loginErr}</div>` : ''}
+    <button class="btn btn-primary" id="login-submit">Continue</button>
+    <div class="note" style="margin-top:14px;">New number? We'll create your account automatically with the PIN you enter. Existing number? Enter your saved PIN to log in.</div>
+  </div>`;
+}
+
+function attachLoginHandlers(){
+  document.querySelectorAll('[data-role]').forEach(b=>{
+    b.onclick = ()=>{ ui.loginRole = b.dataset.role; ui.loginErr=''; render(); };
+  });
+  const submit = document.getElementById('login-submit');
+  if(submit) submit.onclick = ()=>{
+    const phone = document.getElementById('login-phone').value.trim();
+    const pin = document.getElementById('login-pin').value.trim();
+    if(phone.length<7 || !/^\d+$/.test(phone)){ ui.loginErr='Enter a valid phone number'; render(); return; }
+    if(pin.length!==4 || !/^\d+$/.test(pin)){ ui.loginErr='PIN must be exactly 4 digits'; render(); return; }
+
+    const existing = DB.users[phone];
+    if(existing){
+      if(existing.pin !== pin){ ui.loginErr='Wrong PIN for this number'; render(); return; }
+      if(existing.role !== ui.loginRole){ ui.loginErr=`This number is registered as ${existing.role}, not ${ui.loginRole}`; render(); return; }
+    } else {
+      DB.users[phone] = { pin, role: ui.loginRole, trialStart: Date.now(), paid:false, premium:false, blocked:false };
+    }
+    session = { phone, role: ui.loginRole, isAdmin:false };
+    ui.loginErr=''; ui.booking=null;
+    render();
+  };
+  const adminSubmit = document.getElementById('admin-submit');
+  if(adminSubmit) adminSubmit.onclick = ()=>{
+    const pass = document.getElementById('admin-pass').value;
+    if(pass === ADMIN_PASSCODE){
+      session = { phone:null, role:null, isAdmin:true };
+      ui.adminPromptOpen=false; ui.loginErr='';
+      render();
+    } else {
+      ui.loginErr='Wrong passcode'; render();
+    }
+  };
+  const adminCancel = document.getElementById('admin-cancel');
+  if(adminCancel) adminCancel.onclick = ()=>{ ui.adminPromptOpen=false; ui.loginErr=''; render(); };
+}
+
+// ================= AD BANNER =================
+function adBanner(){
+  const u = DB.users[session.phone];
+  if(u && u.premium) return '';
+  if(DB.ads.length===0) return '';
+  const ad = DB.ads[0];
+  return `<div class="ad-banner"><span class="tag2">Sponsored</span><br>${ad.text}</div>`;
+}
+function premiumCard(){
+  const u = DB.users[session.phone];
+  if(u.premium) return `<div class="note">✨ You have Premium — no ads for you.</div>`;
+  return `
+  <div class="card" style="border-color:var(--marigold);">
+    <div class="section-label" style="margin-top:0;">✨ Go Premium — Rs 99/mo</div>
+    <div class="route-meta">Remove all ads from your app.</div>
+    <button class="btn btn-marigold" id="buy-premium">Remove Ads</button>
+  </div>`;
+}
+
+// ================= RIDER VIEW =================
+function riderView(){
+  if(ui.booking) return bookingStatusView();
+  let html = adBanner();
+  html += `
+  <div class="mode-toggle">
+    <button data-mode="fixed" class="${ui.mode==='fixed'?'active':''}">Fixed Route</button>
+    <button data-mode="p2p" class="${ui.mode==='p2p'?'active':''}">Point to Point</button>
+  </div>`;
+
+  if(ui.mode==='fixed'){
+    html += `<div class="section-label">🛺 Shuttle lines near you</div>`;
+    DB.routes.forEach(r=>{
+      html += `
+      <div class="route-card">
+        <div class="rname">${r.name} <span class="rfare">Rs ${r.fare}</span></div>
+        <div class="ribbon">${r.stops.map((s,i)=>`<div class="bead ${i===0?'first':i===r.stops.length-1?'last':''}"></div>`).join('')}</div>
+        <div class="stop-labels">${r.stops.map(s=>`<span>${s}</span>`).join('')}</div>
+        <div class="route-meta">⏱ Next rickshaw in ${r.eta} · pay after ride</div>
+        <button class="btn btn-primary" data-book-route="${r.id}">Book Seat</button>
+      </div>`;
+    });
+  } else {
+    html += `
+    <div class="section-label">📍 Where to?</div>
+    <div class="card">
+      <input type="text" id="p2p-from" placeholder="Pickup location">
+      <input type="text" id="p2p-to" placeholder="Drop location">
+      <button class="btn btn-primary" id="p2p-book">Find a Rickshaw</button>
+      <div class="route-meta" style="margin-top:8px;">Estimated fare shown after driver accepts</div>
+    </div>`;
+  }
+  html += premiumCard();
+  return html;
+}
+
+function bookingStatusView(){
+  const b = ui.booking;
+  let pillClass = b.status==='searching'?'pill-wait':b.status==='ongoing'?'pill-go':'pill-done';
+  let statusText = b.status==='searching'?'Finding a rickshaw…':b.status==='ongoing'?'On the way':'Trip complete';
+
+  let html = `
+  <div class="card">
+    <span class="status-pill ${pillClass}">${statusText}</span>
+    <div class="section-label" style="margin-bottom:4px;">${b.name}</div>
+    <div class="route-meta">Fare: Rs ${b.fare}</div>
+    ${b.status!=='searching' ? `<div class="contact-box">📞 Your driver: <b>${b.driverPhone}</b></div>` : ''}
+  </div>`;
+
+  if(b.status==='searching'){
+    html += `<button class="btn btn-outline" id="sim-accept">Simulate: Driver Accepted</button>`;
+  } else if(b.status==='ongoing'){
+    html += `<button class="btn btn-primary" id="sim-complete">Simulate: Trip Completed</button>`;
+  } else if(b.status==='completed' && !b.paid){
+    html += `
+    <div class="section-label">💰 Pay for your ride</div>
+    <div class="pay-choice">
+      <button data-pay="cash" class="${b.paySel==='cash'?'sel':''}">Cash<small>Pay driver directly, no fee</small></button>
+      <button data-pay="online" class="${b.paySel==='online'?'sel':''}">Online<small>2% platform fee applies</small></button>
+    </div>
+    <button class="btn btn-marigold" id="confirm-pay" ${!b.paySel?'disabled style="opacity:.5"':''}>Confirm Payment</button>`;
+  } else if(b.paid){
+    html += `
+    <div class="note">✅ Paid via ${b.method==='cash'?'cash to driver':'online (2% fee deducted)'}. Thanks for riding Chalu!</div>
+    <button class="btn btn-outline" id="new-ride">Book Another Ride</button>`;
+  }
+  return html;
+}
+
+// ================= DRIVER VIEW =================
+function driverView(){
+  const u = DB.users[session.phone];
+  const status = driverStatus(u);
+
+  if(status==='blocked'){
+    return `
+    <div class="blocked-screen">
+      <div class="icon">🔒</div>
+      <div class="section-label" style="justify-content:center;">App Blocked</div>
+      <div class="route-meta">Your free trial ended and no payment was received. Pay Rs ${DRIVER_MONTHLY_FEE} to keep receiving ride requests.</div>
+      <button class="btn btn-marigold" id="pay-driver-fee">Pay Rs ${DRIVER_MONTHLY_FEE} Now</button>
+    </div>`;
+  }
+
+  let html = adBanner();
+
+  // subscription status card
+  if(status==='trial'){
+    html += `<div class="note">🎁 Free trial: ${daysLeftInTrial(u)} day(s) left. After that, Rs ${DRIVER_MONTHLY_FEE}/month to keep using Chalu.</div>`;
+  } else {
+    html += `<div class="note">✅ Subscription active. Rs ${DRIVER_MONTHLY_FEE}/month.</div>`;
+  }
+
+  html += `<div class="section-label">📥 Incoming requests</div>`;
+  if(DB.requests.length===0){
+    html += `<div class="empty">No pending requests right now</div>`;
+  } else {
+    DB.requests.forEach(r=>{
+      html += `
+      <div class="req-row">
+        <div class="info">
+          <b>${r.from} → ${r.to}</b>
+          <div>${r.type==='fixed'?'Fixed route':'Point to point'} · Rs ${r.fare}</div>
+          <div>📞 Rider: <b>${r.riderPhone}</b></div>
+        </div>
+        <button class="btn btn-primary" style="width:auto;margin:0;padding:9px 14px;" data-accept="${r.id}">Accept</button>
+      </div>`;
+    });
+  }
+
+  const totalCash = DB.trips.filter(t=>t.method==='cash' && t.driverPhone===session.phone).reduce((s,t)=>s+t.fare,0);
+  const totalOnlineNet = DB.trips.filter(t=>t.method==='online' && t.driverPhone===session.phone).reduce((s,t)=>s+(t.fare-t.commission),0);
+
+  html += `
+  <div class="section-label">💵 Your earnings</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="n">Rs ${totalCash}</div><div class="l">CASH COLLECTED</div></div>
+    <div class="stat marigold"><div class="n">Rs ${totalOnlineNet}</div><div class="l">ONLINE (AFTER 2%)</div></div>
+  </div>
+  <div class="note">Cash rides: keep 100%. Online rides: 2% is auto-deducted for the platform.</div>`;
+  html += premiumCard();
+
+  return html;
+}
+
+// ================= ADMIN VIEW =================
+function adminView(){
+  const onlineTrips = DB.trips.filter(t=>t.method==='online');
+  const commission = onlineTrips.reduce((s,t)=>s+t.commission,0);
+  const drivers = Object.entries(DB.users).filter(([p,u])=>u.role==='driver');
+  const riders = Object.entries(DB.users).filter(([p,u])=>u.role==='rider');
+
+  let html = `
+  <div class="section-label">📊 Platform overview</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="n">${DB.trips.length}</div><div class="l">TOTAL RIDES</div></div>
+    <div class="stat marigold"><div class="n">Rs ${commission}</div><div class="l">RIDE COMMISSION (2%)</div></div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat"><div class="n">${riders.length}</div><div class="l">RIDERS</div></div>
+    <div class="stat"><div class="n">${drivers.length}</div><div class="l">DRIVERS</div></div>
+  </div>
+
+  <div class="section-label">🛺 Driver subscriptions</div>
+  <div class="card">`;
+  if(drivers.length===0){
+    html += `<div class="empty">No drivers registered yet</div>`;
+  } else {
+    drivers.forEach(([phone,u])=>{
+      const st = driverStatus(u);
+      const pillClass = st==='active'?'pill-go':st==='trial'?'pill-wait':'pill-block';
+      html += `<div class="ledger-row"><span>${phone} ${u.premium?'<span class=\"premium-badge\">PREMIUM</span>':''}</span>
+        <span class="status-pill ${pillClass}">${st==='trial'?daysLeftInTrial(u)+'d left':st}</span></div>`;
+    });
+  }
+  html += `</div>
+
+  <div class="section-label">📢 Ads (visible to non-premium users)</div>
+  <div class="card">
+    <label>Ad text</label>
+    <input type="text" id="ad-text" placeholder="e.g. 50% off Khalti top-up this week">
+    <label>Link (optional)</label>
+    <input type="text" id="ad-link" placeholder="https://...">
+    <button class="btn btn-primary" id="add-ad">Post Ad</button>
+  </div>`;
+
+  if(DB.ads.length>0){
+    html += `<div class="card">`;
+    DB.ads.forEach(ad=>{
+      html += `<div class="ledger-row"><span>${ad.text}</span><span><button class="btn btn-danger" style="width:auto;margin:0;padding:4px 10px;font-size:11px;" data-remove-ad="${ad.id}">Remove</button></span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div class="note">Commission is 2% on online-paid rides only. Cash rides earn the platform Rs 0 directly — driver subscriptions (Rs ${DRIVER_MONTHLY_FEE}/mo after a ${TRIAL_DAYS}-day free trial) are your other revenue line.</div>`;
+  return html;
+}
+
+// ================= HANDLERS =================
+function attachAppHandlers(){
+  document.querySelectorAll('.tab-btn').forEach(b=>{ b.onclick = ()=>{ ui.tab=b.dataset.tab; render(); }; });
+  document.querySelectorAll('[data-mode]').forEach(b=>{ b.onclick = ()=>{ ui.mode=b.dataset.mode; render(); }; });
+
+  document.querySelectorAll('[data-book-route]').forEach(b=>{
+    b.onclick = ()=>{
+      const r = DB.routes.find(x=>x.id==b.dataset.bookRoute);
+      ui.booking = {name:r.name, fare:r.fare, status:'searching', paid:false};
+      render();
+    };
+  });
+  const p2pBtn = document.getElementById('p2p-book');
+  if(p2pBtn) p2pBtn.onclick = ()=>{
+    const from = document.getElementById('p2p-from').value || 'Pickup';
+    const to = document.getElementById('p2p-to').value || 'Drop';
+    const fare = Math.floor(Math.random()*30)+20;
+    ui.booking = {name:`${from} → ${to}`, fare, status:'searching', paid:false};
+    render();
+  };
+  const acceptBtn = document.getElementById('sim-accept');
+  if(acceptBtn) acceptBtn.onclick = ()=>{
+    const driverPhones = Object.keys(DB.users).filter(p=>DB.users[p].role==='driver');
+    ui.booking.status='ongoing';
+    ui.booking.driverPhone = driverPhones[0] || '98XXXXXXXX (demo)';
+    render();
+  };
+  const completeBtn = document.getElementById('sim-complete');
+  if(completeBtn) completeBtn.onclick = ()=>{ ui.booking.status='completed'; render(); };
+  document.querySelectorAll('[data-pay]').forEach(b=>{ b.onclick = ()=>{ ui.booking.paySel = b.dataset.pay; render(); }; });
+  const confirmPay = document.getElementById('confirm-pay');
+  if(confirmPay) confirmPay.onclick = ()=>{
+    const b = ui.booking;
+    b.paid = true; b.method = b.paySel;
+    const commission = b.paySel==='online' ? Math.round(b.fare*COMMISSION_RATE) : 0;
+    DB.trips.push({fare:b.fare, method:b.paySel, commission, riderPhone:session.phone, driverPhone:b.driverPhone});
+    render();
+  };
+  const newRide = document.getElementById('new-ride');
+  if(newRide) newRide.onclick = ()=>{ ui.booking=null; render(); };
+
+  document.querySelectorAll('[data-accept]').forEach(b=>{
+    b.onclick = ()=>{ DB.requests = DB.requests.filter(r=>r.id!=b.dataset.accept); render(); };
+  });
+  const payFee = document.getElementById('pay-driver-fee');
+  if(payFee) payFee.onclick = ()=>{
+    DB.users[session.phone].paid = true;
+    DB.users[session.phone].trialStart = Date.now(); // reset billing cycle
+    render();
+  };
+  const buyPremium = document.getElementById('buy-premium');
+  if(buyPremium) buyPremium.onclick = ()=>{ DB.users[session.phone].premium = true; render(); };
+}
+
+function attachAdminHandlers(){
+  const addAd = document.getElementById('add-ad');
+  if(addAd) addAd.onclick = ()=>{
+    const text = document.getElementById('ad-text').value.trim();
+    if(!text) return;
+    const link = document.getElementById('ad-link').value.trim();
+    DB.ads.push({id: Date.now(), text, link});
+    render();
+  };
+  document.querySelectorAll('[data-remove-ad]').forEach(b=>{
+    b.onclick = ()=>{ DB.ads = DB.ads.filter(a=>a.id!=b.dataset.removeAd); render(); };
+  });
+}
+
+render();
+</script>
+</body>
+</html>
